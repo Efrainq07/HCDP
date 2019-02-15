@@ -1,15 +1,20 @@
-<Container>:
-    display: display
-    rows:1
-    BoxLayout:
-        orientation: 'vertical'
-        Botona:
-            on_release: root.a()
-        Botonb:
-            on_release: root.b()
-
-
-    Label:
-        id: display
-        font_size: dp(50)
-        text: '-'
+<HCDPBoxLayout>:
+	rows: 1
+	columns: 2
+	padding:10
+	scpacing:10
+	Image:
+		allow_stretch:True
+		size_hint_x:.7
+		source: 'envelope.png'
+	StackLayout:
+		size_hint_x:.3
+		orientation: 'tb-lr'
+		spacing:10
+		padding: 10
+		Button:
+			text: "1"
+			size_hint_y:.1
+		Button:
+			text: "2"
+			size_hint_y:.1
