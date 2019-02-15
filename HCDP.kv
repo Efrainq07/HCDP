@@ -1,4 +1,46 @@
-<HCDPBoxLayout>:
+<VentanaConfigMedidor>:
+	size_hint:.7,.7
+	title: "Configuración de Medidor"
+	BoxLayout:
+		orientation: 'vertical'
+		BoxLayout:
+			Label:
+				text: "Punto:"
+				size_hint_x:.4
+				size_hint_y:.15
+			TextInput:
+				id: punto
+				size_hint_y:.15
+				multiline: False
+		Button:
+			text: "Terminar"
+			size_hint_y:.2
+			on_release: 
+				print(punto.text)
+				root.dismiss()
+<VentanaConfigServidor>:
+	size_hint:.7,.7
+	title: "Configuración de Servidor"
+	BoxLayout:
+		orientation: 'vertical'
+		BoxLayout:
+			Label:
+				text: "Punto:"
+				size_hint_x:.4
+				size_hint_y:.15
+			TextInput:
+				id: punto
+				size_hint_y:.15
+				multiline: False
+		Button:
+			text: "Terminar"
+			size_hint_y:.2
+			on_release: 
+				print(punto.text)
+				root.dismiss()
+	
+<HCDPStackLayout>:
+	orientation: 'lr-tb'
 	rows: 1
 	columns: 2
 	padding:10
@@ -12,9 +54,11 @@
 		orientation: 'tb-lr'
 		spacing:10
 		padding: 10
-		Button:
-			text: "1"
+		Button: 
+			text: "Configurar Medidor"
 			size_hint_y:.1
+			on_release: root.abrirConfigMedidor()
 		Button:
-			text: "2"
+			text: "Configurar Servidor"
 			size_hint_y:.1
+			on_release: root.abrirConfigServidor()
