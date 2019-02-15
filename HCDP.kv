@@ -1,0 +1,15 @@
+<Container>:
+    display: display
+    rows:1
+    BoxLayout:
+        orientation: 'vertical'
+        Botona:
+            on_release: root.a()
+        Botonb:
+            on_release: root.b()
+
+
+    Label:
+        id: display
+        font_size: dp(50)
+        text: '-'
