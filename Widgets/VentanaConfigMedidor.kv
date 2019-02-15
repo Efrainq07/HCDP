@@ -1,0 +1,20 @@
+<VentanaConfigMedidor>:
+	size_hint:.7,.7
+	title: "Configuración de Medidor"
+	BoxLayout:
+		orientation: 'vertical'
+		BoxLayout:
+			Label:
+				text: "Punto:"
+				size_hint_x:.4
+				size_hint_y:.15
+			TextInput:
+				id: punto
+				size_hint_y:.15
+				multiline: False
+		Button:
+			text: "Terminar"
+			size_hint_y:.2
+			on_release: 
+				print(punto.text)
+				root.dismiss()

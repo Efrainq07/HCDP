@@ -1,0 +1,18 @@
+<HCDPLayout>:
+	rows: 1
+	columns: 2
+	padding:30
+	scpacing:20
+	StackLayout:
+		size_hint_x:.3
+		orientation: 'tb-lr'
+		spacing:10
+		padding: 10
+		Button: 
+			text: "Configurar Medidor"
+			size_hint_y:.1
+			on_release: root.abrirConfigMedidor()
+		Button:
+			text: "Configurar Servidor"
+			size_hint_y:.1
+			on_release: root.abrirConfigServidor()
