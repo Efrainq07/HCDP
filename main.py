@@ -4,21 +4,35 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
 from kivy.lang import Builder
 from os import listdir
+from kivy.config import Config
 from kivy.core.window import Window
+import numpy as np  
 
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
 
+
+def graph(formula, x):   
+	y = eval(formula)
+	plt.plot(x, y)  
+
+
 Window.size = (1440,800)
+Config.set('graphics', 'position', 'custom')
+Config.set('graphics', 'left', 0)
+Config.set('graphics', 'top',  0)
 kv_path = './widgets/'
 for kv in listdir(kv_path):
 	if(kv!=".DS_Store"):
 		Builder.load_file(kv_path+kv)
 
-plt.plot([1, 23, 2, 4])
+
+
+graph('1/x',np.arange(0,5,0.1))
 plt.title('Envolvente')
 plt.ylabel('Presión')
 plt.xlabel('Temperatura')
+
 
 
 
