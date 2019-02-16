@@ -5,16 +5,85 @@
 		orientation: 'vertical'
 		BoxLayout:
 			Label:
-				text: "Punto:"
+				text: "Nombre:"
 				size_hint_x:.4
-				size_hint_y:.15
+				size_hint_y:None
+				height:dp(30)
 			TextInput:
-				id: punto
-				size_hint_y:.15
+				id: nombre_medidor
+				size_hint_y:None
+				height:dp(30)
 				multiline: False
-		Button:
-			text: "Terminar"
-			size_hint_y:.2
-			on_release: 
-				print(punto.text)
-				root.dismiss()
+		BoxLayout:
+			Label:
+				text: "Tipo de EOS:"
+				size_hint_x:.4
+				size_hint_y:None
+				height:dp(30)
+			Spinner:
+				id: tipo_eos
+				size_hint_y:None
+				height:dp(30)
+				values: ["Advanced Peng-Robinson","SRT","Peng-Robinson"]
+
+		BoxLayout:
+			Label:
+				text: "Análogo Temperatura:"
+				size_hint_x:.4
+				size_hint_y:None
+				height:dp(30)
+			TextInput:
+				id: anlg_temperatura
+				size_hint_y:None
+				height:dp(30)
+				multiline: False
+		BoxLayout:
+			Label:
+				text: "Análogo Presión:"
+				size_hint_x:.4
+				size_hint_y:None
+				height:dp(30)
+			TextInput:
+				id: anlg_presion
+				size_hint_y:None
+				height:dp(30)
+				multiline: False
+		BoxLayout:
+			Label:
+				text: "Análogo CT:"
+				size_hint_x:.4
+				size_hint_y:None
+				height:dp(30)
+			TextInput:
+				id: anlg_ct
+				size_hint_y:None
+				height:dp(30)
+				multiline: False
+		BoxLayout:
+			Label:
+				text: "Análogo HCDP:"
+				size_hint_x:.4
+				size_hint_y:None
+				height:dp(30)
+			TextInput:
+				id: anlg_hcdp
+				size_hint_y:None
+				height:dp(30)
+				multiline: False
+				
+		BoxLayout:
+			Button:
+				text: "Guardar"
+				size_hint_y:None
+				height:dp(50)
+				on_release: 
+					print(tipo_eos.text)
+					root.dismiss()
+			Button:
+				text: "Cancelar"
+				size_hint_y:None
+				height:dp(50)
+				on_release: 
+					print(tipo_eos.text)
+					root.dismiss()
+	

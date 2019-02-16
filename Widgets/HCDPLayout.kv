@@ -2,12 +2,19 @@
 	rows: 1
 	columns: 2
 	padding:30
-	scpacing:20
+	spacing:20
+	
 	StackLayout:
 		size_hint_x:.3
 		orientation: 'tb-lr'
 		spacing:10
 		padding: 10
+		canvas:
+			Color:
+				rgba: 83/255,81/255,86/255,1
+			RoundedRectangle:
+				pos: self.pos
+				size: self.size
 		Button: 
 			text: "Configurar Medidor"
 			size_hint_y:.1

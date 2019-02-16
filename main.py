@@ -3,28 +3,26 @@ from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
 from kivy.lang import Builder
-from os import listdir
 from kivy.config import Config
 from kivy.core.window import Window
 from kivy.clock import Clock
-import numpy as np  
-
+from kivy.uix.floatlayout import FloatLayout
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+
+from os import listdir
+import numpy as np  
 import matplotlib.pyplot as plt
 
-
-def graph(formula, x):   
-	y = eval(formula)
-	plt.plot(x, y)  
+  
 
 
-Window.size = (1440,800)
+Window.size = (1200,800)
 
 
 
 kv_path = './widgets/'
 for kv in listdir(kv_path):
-	if(kv!=".DS_Store"):
+	if(kv[-3:]==".kv"):
 		Builder.load_file(kv_path+kv)
 
 
@@ -33,6 +31,8 @@ for kv in listdir(kv_path):
 #PopUps
 class VentanaConfigMedidor(Popup):
 	pass
+	
+	
 class VentanaConfigServidor(Popup):
 	def toggleRequiereUser(self):
 		self.password.readonly= not self.password.readonly
@@ -48,35 +48,54 @@ class HCDPLayout(BoxLayout):
 		config.open()
 
 
-#App
 count=1
 
 
-
+#App
 class HCDPApp(App):
 	plt.style.use('dark_background')
 	canvas=FigureCanvasKivyAgg(plt.gcf())
+	tiempoActualiza=1
 	def build(self):
 		self.title="Aplicación HCDP"
 		layout=HCDPLayout()
 		layout.add_widget(self.canvas)
-		Clock.schedule_interval(self.update, 1)
+		Clock.schedule_interval(self.update, self.tiempoActualiza)	
 		return layout
 		
-	def ploter(self):
+	#Función que evalua la formula en los elementos del numpy array x
+	def graph(self, expresion, x):   
+		y = eval(expresion)
+		plt.plot(x, y)
+		
+	#Función que dibuja la gráfica	
+	def ploter(self): 
 		global count
 		plt.clf()
 		plt.grid(True)
-		graph('1/x',np.arange(0,count,0.1))
-		plt.title('Envolvente de Fase',fontsize='18',fontname='Andale Mono')
-		plt.ylabel('Presión',fontsize='16',fontname='Andale Mono')
-		plt.xlabel('Temperatura',fontsize='16',fontname='Andale Mono')
+		self.graph('1/x',np.arange(0.1,10+count,0.1)) #Evalua los elementos del numpy array en la expresion '1/x'
+		
+		plt.title(				#Título de la gráfica
+				'Envolvente de Fase',
+				fontsize='18',
+				fontname='Andale Mono')
+				
+		plt.ylabel(				#Etiqueta del eje y
+				'Presión',
+				fontsize='16',
+				fontname='Andale Mono')
+		plt.xlabel(				#Etiqueta del eje x
+				'Temperatura',
+				fontsize='16',
+				fontname='Andale Mono')
 		count+=1
 		
+		
+	#Función que actualiza la gráfica en cada intervalo
 	def update(self, *args):
 		self.ploter()
 		self.canvas.draw_idle()
-		
+	
 	
 
 
