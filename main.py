@@ -6,6 +6,7 @@ from kivy.lang import Builder
 from os import listdir
 from kivy.config import Config
 from kivy.core.window import Window
+from kivy.clock import Clock
 import numpy as np  
 
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
@@ -18,20 +19,13 @@ def graph(formula, x):
 
 
 Window.size = (1440,800)
-Config.set('graphics', 'position', 'custom')
-Config.set('graphics', 'left', 0)
-Config.set('graphics', 'top',  0)
+
+
+
 kv_path = './widgets/'
 for kv in listdir(kv_path):
 	if(kv!=".DS_Store"):
 		Builder.load_file(kv_path+kv)
-
-
-
-graph('1/x',np.arange(0,5,0.1))
-plt.title('Envolvente')
-plt.ylabel('Presión')
-plt.xlabel('Temperatura')
 
 
 
@@ -53,13 +47,37 @@ class HCDPLayout(BoxLayout):
 		config=VentanaConfigServidor()
 		config.open()
 
+
 #App
+count=1
+
+
+
 class HCDPApp(App):
+	plt.style.use('dark_background')
+	canvas=FigureCanvasKivyAgg(plt.gcf())
 	def build(self):
 		self.title="Aplicación HCDP"
 		layout=HCDPLayout()
-		layout.add_widget(FigureCanvasKivyAgg(plt.gcf()))
+		layout.add_widget(self.canvas)
+		Clock.schedule_interval(self.update, 1)
 		return layout
+		
+	def ploter(self):
+		global count
+		plt.clf()
+		plt.grid(True)
+		graph('1/x',np.arange(0,count,0.1))
+		plt.title('Envolvente de Fase',fontsize='18',fontname='Andale Mono')
+		plt.ylabel('Presión',fontsize='16',fontname='Andale Mono')
+		plt.xlabel('Temperatura',fontsize='16',fontname='Andale Mono')
+		count+=1
+		
+	def update(self, *args):
+		self.ploter()
+		self.canvas.draw_idle()
+		
+	
 
 
 
