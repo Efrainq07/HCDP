@@ -73,7 +73,7 @@ class HCDPApp(App):
 		global count
 		plt.clf()
 		plt.grid(True)
-		self.graph('1/x',np.arange(0.1,10+count,0.1)) #Evalua los elementos del numpy array en la expresion '1/x'
+		self.graph('1/x',np.arange(0.1,1+count,0.1)) #Evalua los elementos del numpy array en la expresion '1/x'
 		
 		plt.title(				#Título de la gráfica
 				'Envolvente de Fase',
