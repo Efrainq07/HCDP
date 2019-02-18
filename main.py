@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 
 Window.size = (1200,800)
-#Mac Change
+
 
 
 kv_path = './widgets/'
