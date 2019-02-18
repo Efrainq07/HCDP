@@ -18,13 +18,11 @@ import matplotlib.pyplot as plt
 
 Window.size = (1200,800)
 
-
-
 kv_path = './widgets/'
 for kv in listdir(kv_path):
 	if(kv[-3:]==".kv"):
-		Builder.load_file(kv_path+kv)
-
+		with open(kv_path+kv, encoding='utf8') as archivoWidget: 	#Se abre el archivo para poder leer acentos y caracteres UTF-8,
+			Builder.load_string(archivoWidget.read())				#si se abre con la herramienta de Kivy estos no se visualizan.
 
 
 
