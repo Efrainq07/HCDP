@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
   
 
 
-Window.size = (1200,800)
+Window.size = (1200,500)
 
 kv_path = './widgets/'
 for kv in listdir(kv_path):
