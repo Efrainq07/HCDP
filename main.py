@@ -54,7 +54,7 @@ class VentanaConfigMedidor(Popup):
 							'anlg_ct': [self.anlg_ct.text],
 							'anlg_hcdp': [self.anlg_hcdp.text]})
 		datosMedidorActual = self.buscaArchivo()
-		pd.concat([datosMedidorActual,datosMedidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoMedidor)
+		pd.concat([datosMedidorActual,datosMedidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoMedidor,index=False)
 		
 	
 	

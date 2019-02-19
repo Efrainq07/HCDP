@@ -1,4 +1,5 @@
-,Unnamed: 0,Unnamed: 0.1,anlg_ct,anlg_hcdp,anlg_presion,anlg_temperatura,nombreMedidor,tipo_eos
-0,0.0,0.0,CT1,HCDP1,P1,T1,Medidor1,Advanced Peng-Robinson
-1,1.0,,CT2,HCDP2,P2,T2,Medidor2,Advanced Peng-Robinson
-2,,,yuuy,21,gt,T1,Medidor3,Peng-Robinson
+nombreMedidor,tipo_eos,anlg_temperatura,anlg_presion,anlg_ct,anlg_hcdp
+Medidor1,Advanced Peng-Robinson,tempe1,pres1,ct1,hcdp1
+Medidor2,Peng-Robinson,tem2,p2,ct2,hcdp2
+medidor3,SRT,hjda,12,123,6789
+Medidor5,Advanced Peng-Robinson,1111114,3213,dsklf,"sddm,"
