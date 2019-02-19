@@ -1,0 +1,4 @@
+,Unnamed: 0,Unnamed: 0.1,anlg_ct,anlg_hcdp,anlg_presion,anlg_temperatura,nombreMedidor,tipo_eos
+0,0.0,0.0,CT1,HCDP1,P1,T1,Medidor1,Advanced Peng-Robinson
+1,1.0,,CT2,HCDP2,P2,T2,Medidor2,Advanced Peng-Robinson
+2,,,yuuy,21,gt,T1,Medidor3,Peng-Robinson

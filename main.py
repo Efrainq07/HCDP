@@ -11,6 +11,7 @@ from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 
 from os import listdir
 import numpy as np  
+import pandas as pd
 import matplotlib.pyplot as plt
 
   
@@ -30,7 +31,31 @@ for kv in listdir(kv_path):
 
 #PopUps
 class VentanaConfigMedidor(Popup):
-	pass
+	archivoMedidor="configMedidor.csv"
+	csv_path='./data/'
+	def buscaArchivo(self):
+		for csv in listdir(self.csv_path):
+			if(csv==self.archivoMedidor):
+				return pd.read_csv(self.csv_path+self.archivoMedidor)
+				
+		return pd.DataFrame({'nombreMedidor': [],
+									'tipo_eos': [],
+									'anlg_temperatura': [],
+									'anlg_presion': [],
+									'anlg_ct': [],
+									'anlg_hcdp': []})
+		
+		
+	def guardaDatos(self):
+		datosMedidorNuevo = pd.DataFrame({'nombreMedidor': [self.nombre_medidor.text],
+							'tipo_eos': [self.tipo_eos.text],
+							'anlg_temperatura': [self.anlg_temperatura.text],
+							'anlg_presion': [self.anlg_presion.text],
+							'anlg_ct': [self.anlg_ct.text],
+							'anlg_hcdp': [self.anlg_hcdp.text]})
+		datosMedidorActual = self.buscaArchivo()
+		pd.concat([datosMedidorActual,datosMedidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoMedidor)
+		
 	
 	
 class VentanaConfigServidor(Popup):

@@ -1,6 +1,12 @@
 <VentanaConfigMedidor>:
 	size_hint:.7,.7
 	title: "Configuración de Medidor"
+	nombre_medidor:nombre_medidor
+	tipo_eos:tipo_eos
+	anlg_temperatura:anlg_temperatura
+	anlg_presion:anlg_presion
+	anlg_ct:anlg_ct
+	anlg_hcdp:anlg_hcdp
 	BoxLayout:
 		orientation: 'vertical'
 		BoxLayout:
@@ -77,13 +83,12 @@
 				size_hint_y:None
 				height:dp(50)
 				on_release: 
-					print(tipo_eos.text)
+					root.guardaDatos()
 					root.dismiss()
 			Button:
 				text: "Cancelar"
 				size_hint_y:None
 				height:dp(50)
 				on_release: 
-					print(tipo_eos.text)
 					root.dismiss()
 	
