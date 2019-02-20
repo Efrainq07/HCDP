@@ -88,12 +88,19 @@ class VentanaConfigServidor(Popup):
 
 #LayOut Principal
 class HCDPLayout(BoxLayout):
+	csv_path='./data/'
 	def abrirConfigMedidor(self):
 		config=VentanaConfigMedidor()
 		config.open()
 	def abrirConfigServidor(self):
 		config=VentanaConfigServidor()
 		config.open()
+	def abreArchivoCSV(self,archivo):
+			for csv in listdir(self.csv_path):
+				if(csv==archivo):
+					return pd.read_csv(self.csv_path+archivo)
+					
+			return pd.DataFrame({})
 
 
 count=1
