@@ -7,7 +7,6 @@
 		size_hint_x:.3
 		orientation: 'tb-lr'
 		spacing:10
-		padding: 10
 		canvas:
 			Color:
 				rgba: 83/255,81/255,86/255,1
@@ -22,3 +21,13 @@
 			text: "Configurar Servidor"
 			size_hint_y:.1
 			on_release: root.abrirConfigServidor()
+		StackLayout:
+			orientation:'bt-lr'
+			size_hint_x:1
+			size_hint_y:.8
+			BoxLayout:
+				size_hint_y:.15
+				Image:
+					allow_stretch:True
+					keep_ratio: False
+					source:'fermaca.png'
