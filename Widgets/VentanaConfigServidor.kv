@@ -1,6 +1,10 @@
 <VentanaConfigServidor>:
 	password: password
 	user: user
+	eqremoto:eqremoto
+	dirip:dirip
+	inst:inst
+	reqpass:reqpass
 	size_hint:.7,.7
 	title: "Configuración de Servidor"
 	BoxLayout:
@@ -50,6 +54,7 @@
 				size_hint_y:None
 				height:dp(30)
 			CheckBox:
+				id:reqpass
 				on_active:
 					root.toggleRequiereUser()
 				color: 200,200,200,1
@@ -86,13 +91,12 @@
 				size_hint_y:None
 				height:dp(50)
 				on_release: 
-					print(dirip.text)
+					root.guardaDatos()
 					root.dismiss()
 			Button:
 				text: "Cancelar"
 				size_hint_y:None
 				height:dp(50)
-				on_release: 
-					print(dirip.text)
+				on_release:
 					root.dismiss()
 	

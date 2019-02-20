@@ -59,9 +59,34 @@ class VentanaConfigMedidor(Popup):
 	
 	
 class VentanaConfigServidor(Popup):
+	archivoServidor="configServidor.csv"
+	csv_path='./data/'
 	def toggleRequiereUser(self):
 		self.password.readonly= not self.password.readonly
 		self.user.readonly= not self.user.readonly
+	
+	def buscaArchivo(self):
+		for csv in listdir(self.csv_path):
+			if(csv==self.archivoServidor):
+				return pd.read_csv(self.csv_path+self.archivoServidor)
+				
+		return pd.DataFrame({'eqRemoto': [],
+									'DirIP': [],
+									'instancia': [],
+									'reqpass': [],
+									'user':[],
+									'password':[]})
+		
+		
+	def guardaDatos(self):
+		datosServidorNuevo = pd.DataFrame({'eqRemoto': [self.eqremoto.text],
+							'DirIP': [self.dirip.text],
+							'instancia': [self.inst.text],
+							'reqpass': [self.reqpass.active],
+							'user':[self.user.text],
+							'password':[self.password.text]})
+		datosServidorActual = self.buscaArchivo()
+		pd.concat([datosServidorActual,datosServidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoServidor,index=False)
 
 #LayOut Principal
 class HCDPLayout(BoxLayout):
