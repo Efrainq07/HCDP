@@ -103,7 +103,7 @@ class HCDPLayout(BoxLayout):
 				if(csv==archivo):
 					return pd.read_csv(self.csv_path+archivo)
 					
-			return pd.DataFrame({})
+			return pd.DataFrame({'nombreMedidor':[],'eqRemoto':[]})
 
 
 count=1
