@@ -1,3 +1,4 @@
 eqRemoto,DirIP,instancia,reqpass,user,password
 servidor1,192.168.1.23,SIC10,0.0,,
-servidor2,192.168.1.24,SIC11,1.0,efrainq07,ses
+servidor2,122.123.12,abd,0.0,,
+servidor3,123.12312.10,ADIOS,0.0,,
