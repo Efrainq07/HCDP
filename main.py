@@ -64,7 +64,6 @@ class VentanaConfigMedidor(Popup):
 		datosMedidorActual = datosMedidorActual[datosMedidorActual.nombreMedidor != self.nombre_medidor.text]
 		#Guarda en formato .csv el DataFrame que contiene los medidores viejos unido con el medidor nuevo
 		pd.concat([datosMedidorActual,datosMedidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoMedidor,index=False)
-		
 	
 	
 class VentanaConfigServidor(Popup):
@@ -101,8 +100,12 @@ class VentanaConfigServidor(Popup):
 		#Guarda en formato .csv el DataFrame que contiene los servidores viejos unido con el medidor nuevo
 		pd.concat([datosServidorActual,datosServidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoServidor,index=False)
 
+class VentanaNotificacion(Popup):
+	pass
+
 #LayOut Principal
 class HCDPLayout(BoxLayout):
+	conexion=None
 	csv_path='./data/'
 	def abrirConfigMedidor(self):			#Abre el PopUp para configurar un nuevo medidor.
 		config=VentanaConfigMedidor()
@@ -110,13 +113,30 @@ class HCDPLayout(BoxLayout):
 	def abrirConfigServidor(self):			#Abre el PopUp para configurar un nuevo servidor
 		config=VentanaConfigServidor()
 		config.open()
+	def abrirNotificacion(self,titulo,mensaje):
+		config=VentanaNotificacion()
+		config.title=titulo
+		config.ids.mensaje.text=mensaje
+		config.open()
 	def abreArchivoCSV(self,archivo):								#Abre como DataFrame el archivo .csv que se pide.
 			for csv in listdir(self.csv_path):
 				if(csv==archivo):
 					return pd.read_csv(self.csv_path+archivo)
 					
 			return pd.DataFrame({'nombreMedidor':[],'eqRemoto':[]})	#Si no se encuentra el .csv se regresa un DataFram con columnas vacías
-
+	
+	def conexionServidor(self, eqRemoto):
+		servidores=self.abreArchivoCSV('configServidor.csv')
+		servidores=servidores.loc[servidores['eqRemoto']==eqRemoto]
+		try:
+			self.conexion=pyodbc.connect(DRIVER='{SQL Server}',
+										SERVER='{'+servidores.iloc[0]['DirIP']+'}',
+										DATABASE='{'+servidores.iloc[0]['instancia']+'}',
+										UID='{'+servidores.iloc[0]['user']+'}',
+										PWD='{'+servidores.iloc[0]['password']+'}')
+			return True
+		except:
+			self.abrirNotificacion("Conexión fallida","Hubo un problema en la conexión con el servidor.")
 
 count=1
 
@@ -160,8 +180,6 @@ class HCDPApp(App):
 		
 	#Función que actualiza la gráfica y los spinners de medidor y servidor en cada intervalo de tiempo
 	def update(self, *args):
-		self.layout.ids.servidoractual.values = self.layout.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()
-		self.layout.ids.medidoractual.values = self.layout.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()
 		self.ploter()
 		self.canvas.draw_idle()
 	
