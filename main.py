@@ -132,17 +132,14 @@ class HCDPApp(App):
 		
 		plt.title(				#Título de la gráfica
 				'Envolvente de Fase',
-				fontsize='18',
-				fontname='Andale Mono')
+				fontsize='18')
 				
 		plt.ylabel(				#Etiqueta del eje y
 				'Presión',
-				fontsize='16',
-				fontname='Andale Mono')
+				fontsize='16')
 		plt.xlabel(				#Etiqueta del eje x
 				'Temperatura',
-				fontsize='16',
-				fontname='Andale Mono')
+				fontsize='16')
 		count+=1
 		
 		
