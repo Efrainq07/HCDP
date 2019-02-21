@@ -39,6 +39,8 @@
 					size_hint_x:.2
 				Spinner:
 					id: medidoractual
+					on_press:
+						root.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()
 					size_hint_x:.6
 					values: root.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()
 			BoxLayout:
@@ -48,5 +50,9 @@
 					size_hint_x:.2
 				Spinner:
 					id: servidoractual
+					on_press:
+						root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()
+					on_text:
+						root.conexionServidor(servidoractual.text)
 					size_hint_x:.6
 					values: root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()

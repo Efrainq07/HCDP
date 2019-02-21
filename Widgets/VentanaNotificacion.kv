@@ -1,0 +1,19 @@
+<VentanaNotificacion>:
+	size_hint:0.3,0.3
+	mensaje:mensaje
+	BoxLayout:
+		size_hint:.8,.8
+		orientation:'vertical'
+		Label:
+			text_size: self.width, None
+			size_hint: 1, None
+			id: mensaje
+			text: "Así es"
+		AnchorLayout:
+			Button:
+				size_hint:0.6,1
+				anchor_x:'center'
+				anchor_y:'bottom'
+				text: "Aceptar"
+				on_release:
+					root.dismiss()
