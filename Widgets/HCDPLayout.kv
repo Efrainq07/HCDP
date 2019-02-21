@@ -14,13 +14,11 @@
 				size: self.size
 		Button: 
 			text: "Configurar Medidor"
-			size_hint_y:None
-			height:dp(40)
+			size_hint_y:.05
 			on_release: root.abrirConfigMedidor()
 		Button:
 			text: "Configurar Servidor"
-			size_hint_y:None
-			height:dp(40)
+			size_hint_y:.05
 			on_release: root.abrirConfigServidor()
 
 		StackLayout:
@@ -34,30 +32,20 @@
 					keep_ratio: False
 					source:'fermaca.png'
 			BoxLayout:
-				size_hint_y:None
-				height:dp(40)
+				size_hint_y:.05
 				Label:
 					text: "Medidor:"
 					size_hint_x:.2
-					size_hint_y:None
-					height:dp(40)
 				Spinner:
 					id: medidoractual
 					size_hint_x:.6
-					size_hint_y:None
-					height:dp(40)
 					values: root.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()
 			BoxLayout:
-				size_hint_y:None
-				height:dp(40)
+				size_hint_y:.05
 				Label:
 					text: "Servidor:"
 					size_hint_x:.2
-					size_hint_y:None
-					height:dp(40)
 				Spinner:
 					id: medidoractual
 					size_hint_x:.6
-					size_hint_y:None
-					height:dp(40)
 					values: root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()
