@@ -32,9 +32,9 @@ for kv in listdir(kv_path):
 class VentanaConfigMedidor(Popup):
 	archivoMedidor="configMedidor.csv"
 	csv_path='./data/'
-	def buscaArchivo(self):
-		for csv in listdir(self.csv_path):
-			if(csv==self.archivoMedidor):
+	def buscaArchivo(self):									#Busca el archivo .csv de los medidores configurados y lo regresa como
+		for csv in listdir(self.csv_path):					#DataFrame, si no se encuentra se regresa un DataFrame con columnas vacías.
+			if(csv==self.archivoMedidor):					#(pero con el nombre de las columnas incluido).
 				return pd.read_csv(self.csv_path+self.archivoMedidor)
 				
 		return pd.DataFrame({'nombreMedidor': [],
@@ -45,15 +45,18 @@ class VentanaConfigMedidor(Popup):
 									'anlg_hcdp': []})
 		
 		
-	def guardaDatos(self):
-		datosMedidorNuevo = pd.DataFrame({'nombreMedidor': [self.nombre_medidor.text],
-							'tipo_eos': [self.tipo_eos.text],
+	def guardaDatos(self):																#Guarda los datos de un nuevo medidor,
+		datosMedidorNuevo = pd.DataFrame({'nombreMedidor': [self.nombre_medidor.text],	#si ya existe un medidor con el mismo nombre
+							'tipo_eos': [self.tipo_eos.text],							#entonces lo sobreescribe
 							'anlg_temperatura': [self.anlg_temperatura.text],
 							'anlg_presion': [self.anlg_presion.text],
 							'anlg_ct': [self.anlg_ct.text],
 							'anlg_hcdp': [self.anlg_hcdp.text]})
+		#Lee el archivo actual de medidores
 		datosMedidorActual = self.buscaArchivo()
+		#Selecciona los medidores con nombre diferente al nuevo, efectivamente eliminando los medidores con el mismo nombre que el nuevo.
 		datosMedidorActual = datosMedidorActual[datosMedidorActual.nombreMedidor != self.nombre_medidor.text]
+		#Guarda en formato .csv el DataFrame que contiene los medidores viejos unido con el medidor nuevo
 		pd.concat([datosMedidorActual,datosMedidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoMedidor,index=False)
 		
 	
@@ -65,11 +68,11 @@ class VentanaConfigServidor(Popup):
 		self.password.readonly= not self.password.readonly
 		self.user.readonly= not self.user.readonly
 	
-	def buscaArchivo(self):
-		for csv in listdir(self.csv_path):
-			if(csv==self.archivoServidor):
-				return pd.read_csv(self.csv_path+self.archivoServidor)
-				
+	def buscaArchivo(self):																#Busca el archivo .csv de los servidores actuales
+		for csv in listdir(self.csv_path):												#y regresa un DataFrame con los datos de este,
+			if(csv==self.archivoServidor):												#si no se encuentra el .csv se regresa un
+				return pd.read_csv(self.csv_path+self.archivoServidor)					#DataFrame con columnas vacías.
+																						#(pero con el nombre de las columnas incluido)
 		return pd.DataFrame({'eqRemoto': [],
 									'DirIP': [],
 									'instancia': [],
@@ -78,32 +81,35 @@ class VentanaConfigServidor(Popup):
 									'password':[]})
 		
 		
-	def guardaDatos(self):
-		datosServidorNuevo = pd.DataFrame({'eqRemoto': [self.eqremoto.text],
-							'DirIP': [self.dirip.text],
+	def guardaDatos(self):														#Guarda los datos de un nuevo servidor
+		datosServidorNuevo = pd.DataFrame({'eqRemoto': [self.eqremoto.text],	#si ya existe un servidor con el mismo nombre
+							'DirIP': [self.dirip.text],							#entonces lo sobreescribe
 							'instancia': [self.inst.text],
 							'reqpass': [self.reqpass.active],
 							'user':[self.user.text],
 							'password':[self.password.text]})
+		#Lee el archivo actual de servidores
 		datosServidorActual = self.buscaArchivo()
+		#Selecciona los servidores con nombre diferente al nuevo, efectivamente eliminando los medidores con el mismo nombre que el nuevo.
 		datosServidorActual = datosServidorActual[datosServidorActual.eqRemoto != self.eqremoto.text]
+		#Guarda en formato .csv el DataFrame que contiene los servidores viejos unido con el medidor nuevo
 		pd.concat([datosServidorActual,datosServidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoServidor,index=False)
 
 #LayOut Principal
 class HCDPLayout(BoxLayout):
 	csv_path='./data/'
-	def abrirConfigMedidor(self):
+	def abrirConfigMedidor(self):			#Abre el PopUp para configurar un nuevo medidor.
 		config=VentanaConfigMedidor()
 		config.open()
-	def abrirConfigServidor(self):
+	def abrirConfigServidor(self):			#Abre el PopUp para configurar un nuevo servidor
 		config=VentanaConfigServidor()
 		config.open()
-	def abreArchivoCSV(self,archivo):
+	def abreArchivoCSV(self,archivo):								#Abre como DataFrame el archivo .csv que se pide.
 			for csv in listdir(self.csv_path):
 				if(csv==archivo):
 					return pd.read_csv(self.csv_path+archivo)
 					
-			return pd.DataFrame({'nombreMedidor':[],'eqRemoto':[]})
+			return pd.DataFrame({'nombreMedidor':[],'eqRemoto':[]})	#Si no se encuentra el .csv se regresa un DataFram con columnas vacías
 
 
 count=1
@@ -118,7 +124,7 @@ class HCDPApp(App):
 	def build(self):
 		self.title="Aplicación HCDP"
 		self.layout.add_widget(self.canvas)
-		Clock.schedule_interval(self.update, self.tiempoActualiza)	
+		Clock.schedule_interval(self.update, self.tiempoActualiza)		#Se establece que update se correra cada intervalo tiempoActualiza
 		return self.layout
 		
 	#Función que evalua la formula en los elementos del numpy array x
@@ -146,7 +152,7 @@ class HCDPApp(App):
 		count+=1
 		
 		
-	#Función que actualiza la gráfica en cada intervalo
+	#Función que actualiza la gráfica y los spinners de medidor y servidor en cada intervalo de tiempo
 	def update(self, *args):
 		self.layout.ids.servidoractual.values = self.layout.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()
 		self.layout.ids.medidoractual.values = self.layout.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()
