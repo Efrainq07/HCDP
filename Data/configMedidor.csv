@@ -1,12 +1,3 @@
 nombreMedidor,tipo_eos,anlg_temperatura,anlg_presion,anlg_ct,anlg_hcdp
-Medidor2,Peng-Robinson,tem2,p2,ct2,hcdp2
-medidor3,SRT,hjda,12,123,6789
-Medidor5,Advanced Peng-Robinson,1111114,3213,dsklf,"sddm,"
-<<<<<<< HEAD
-Medidor34,Advanced Peng-Robinson,GT1,PT1,CTT1,213DF
-=======
-Medidor1,Advanced Peng-Robinson,adi1,kdalk1,213,312
-Medido10008000,Peng-Robinson,CT67,8298,1221,12
-dmoin	,SRT,21321,1312,1321,13kfldskn
-hola,Advanced Peng-Robinson,121,121,12,1
->>>>>>> c8e1271a04eedac0a7c842fab6a3891e6e41bb43
+medidorMaster,Advanced Peng-Robinson,121221,23112,32123,321213
+medidorUltra,Peng-Robinson,321213,3223,adew,231

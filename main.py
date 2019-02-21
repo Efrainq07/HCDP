@@ -11,12 +11,18 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 
 from os import listdir
+import pyodbc
 import numpy as np  
 import pandas as pd
 import matplotlib.pyplot as plt
 
   
 
+conexionSQL = pyodbc.connect('DRIVER={SQL Server};SERVER=SIC10\SICCOA;DATABASE=pruebas_fermaca;UID=frm1;PWD=frm1')
+cursor=conexionSQL.cursor()
+cursor.execute("select * from mascotas")
+for row in cursor.fetchall():
+    print(row)
 
 Window.size = (1200,800)
 
