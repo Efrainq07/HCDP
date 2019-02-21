@@ -2,7 +2,8 @@
 	rows: 1
 	columns: 2
 	spacing:20
-	
+	medidoractual:medidoractual
+	servidoractual:servidoractual
 	StackLayout:
 		size_hint_x:.3
 		orientation: 'tb-lr'
@@ -46,6 +47,6 @@
 					text: "Servidor:"
 					size_hint_x:.2
 				Spinner:
-					id: medidoractual
+					id: servidoractual
 					size_hint_x:.6
 					values: root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()

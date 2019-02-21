@@ -1,5 +1,8 @@
 nombreMedidor,tipo_eos,anlg_temperatura,anlg_presion,anlg_ct,anlg_hcdp
-Medidor1,Advanced Peng-Robinson,tempe1,pres1,ct1,hcdp1
 Medidor2,Peng-Robinson,tem2,p2,ct2,hcdp2
 medidor3,SRT,hjda,12,123,6789
 Medidor5,Advanced Peng-Robinson,1111114,3213,dsklf,"sddm,"
+Medidor1,Advanced Peng-Robinson,adi1,kdalk1,213,312
+Medido10008000,Peng-Robinson,CT67,8298,1221,12
+dmoin	,SRT,21321,1312,1321,13kfldskn
+hola,Advanced Peng-Robinson,121,121,12,1

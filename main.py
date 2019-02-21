@@ -2,6 +2,7 @@ from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
+from kivy.uix.dropdown import DropDown
 from kivy.lang import Builder
 from kivy.config import Config
 from kivy.core.window import Window
@@ -52,6 +53,7 @@ class VentanaConfigMedidor(Popup):
 							'anlg_ct': [self.anlg_ct.text],
 							'anlg_hcdp': [self.anlg_hcdp.text]})
 		datosMedidorActual = self.buscaArchivo()
+		datosMedidorActual = datosMedidorActual[datosMedidorActual.nombreMedidor != self.nombre_medidor.text]
 		pd.concat([datosMedidorActual,datosMedidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoMedidor,index=False)
 		
 	
@@ -84,6 +86,7 @@ class VentanaConfigServidor(Popup):
 							'user':[self.user.text],
 							'password':[self.password.text]})
 		datosServidorActual = self.buscaArchivo()
+		datosServidorActual = datosServidorActual[datosServidorActual.eqRemoto != self.eqremoto.text]
 		pd.concat([datosServidorActual,datosServidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoServidor,index=False)
 
 #LayOut Principal
@@ -110,13 +113,13 @@ count=1
 class HCDPApp(App):
 	plt.style.use('dark_background')
 	canvas=FigureCanvasKivyAgg(plt.gcf())
+	layout=HCDPLayout()
 	tiempoActualiza=1
 	def build(self):
 		self.title="Aplicación HCDP"
-		layout=HCDPLayout()
-		layout.add_widget(self.canvas)
+		self.layout.add_widget(self.canvas)
 		Clock.schedule_interval(self.update, self.tiempoActualiza)	
-		return layout
+		return self.layout
 		
 	#Función que evalua la formula en los elementos del numpy array x
 	def graph(self, expresion, x):   
@@ -145,6 +148,8 @@ class HCDPApp(App):
 		
 	#Función que actualiza la gráfica en cada intervalo
 	def update(self, *args):
+		self.layout.ids.servidoractual.values = self.layout.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()
+		self.layout.ids.medidoractual.values = self.layout.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()
 		self.ploter()
 		self.canvas.draw_idle()
 	
