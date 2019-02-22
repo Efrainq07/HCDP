@@ -129,9 +129,9 @@ class HCDPLayout(BoxLayout):
 										DATABASE='{'+servidores.iloc[0]['instancia']+'}',
 										UID='{'+servidores.iloc[0]['user']+'}',
 										PWD='{'+servidores.iloc[0]['password']+'}')
-			return True
+			self.abrirNotificacion("Conexión Exitosa","Se conecta de manera exitosa con el servidor.")
 		except:
-			return False
+			self.abrirNotificacion("Conexión Fallida","Hubo un problema en la conexión con el servidor.")
 
 count=1
 
