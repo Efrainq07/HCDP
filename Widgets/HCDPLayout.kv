@@ -53,6 +53,9 @@
 					on_press:
 						servidoractual.values=root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()
 					on_text:
-						root.conexionServidor(servidoractual.text)
+						if(root.conexionServidor(servidoractual.text)):
+							self.abrirNotificacion("Conexión Exitosa","Se conecta de manera exitosa con el servidor.")
+						else:
+							self.abrirNotificacion("Conexión Fallida","Hubo un problema en la conexión con el servidor.")
 					size_hint_x:.6
 					values: root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()

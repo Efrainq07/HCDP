@@ -131,7 +131,7 @@ class HCDPLayout(BoxLayout):
 										PWD='{'+servidores.iloc[0]['password']+'}')
 			return True
 		except:
-			self.abrirNotificacion("Conexión fallida","Hubo un problema en la conexión con el servidor.")
+			return False
 
 count=1
 
