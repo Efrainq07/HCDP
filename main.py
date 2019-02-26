@@ -235,12 +235,17 @@ class HCDPApp(App):
 
 	def obtenerExpresion(self):
 		consulta=self.layout.conexion.cursor()
-		consulta.execute("select * from coeficientes")
-		resultado=consulta.fetchone()
-		if resultado:
-			return str(resultado.coeficiente1)+"*x**2 +"+str(resultado.coeficiente2)+"*x+"+str(resultado.coeficiente3)
+		nombremedidor=self.layout.ids.medidoractual.text
+		if(nombremedidor == ""):
+			return "x*0"
 		else:
-			return "0"
+			consulta.execute("select * from medidores where nombreMedidor='"+nombremedidor+"'")
+			resultado = consulta.fetchone()
+			if resultado:
+				return str(resultado.coeficiente1) + "*x**2 +" + str(resultado.coeficiente2) + "*x+" + str(
+					resultado.coeficiente3)
+			else:
+				return "x*0"
 
 	#Función que dibuja la gráfica	
 	def ploter(self): 

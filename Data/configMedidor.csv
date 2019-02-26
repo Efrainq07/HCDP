@@ -1,2 +1,4 @@
 nombreMedidor,tipo_eos,anlg_temperatura,anlg_presion,anlg_ct,anlg_hcdp
 meter1,Advanced Peng-Robinson,T1FMC,P1FMC,CT1FMC,DP1FMC
+medidor1,Advanced Peng-Robinson,TFMC1,PFMC2,CT12,FDG1
+medidor2,Peng-Robinson,1233,P1123,ADS24,12FG
