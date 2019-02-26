@@ -29,6 +29,8 @@ for kv in listdir(kv_path):
 
 
 
+
+
 #PopUps
 class VentanaConfigMedidor(Popup):
 	archivoMedidor="configMedidor.csv"
@@ -56,10 +58,26 @@ class VentanaConfigMedidor(Popup):
 		#Lee el archivo actual de medidores
 		datosMedidorActual = self.buscaArchivo()
 		#Selecciona los medidores con nombre diferente al nuevo, efectivamente eliminando los medidores con el mismo nombre que el nuevo.
-		datosMedidorActual = datosMedidorActual[datosMedidorActual.nombreMedidor != self.nombre_medidor.text]
-		#Guarda en formato .csv el DataFrame que contiene los medidores viejos unido con el medidor nuevo
-		pd.concat([datosMedidorActual,datosMedidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoMedidor,index=False)
-	
+		if(datosMedidorActual.size != 0 and datosMedidorActual[datosMedidorActual.nombreMedidor == self.nombre_medidor.text]['nombreMedidor'].size>0):
+			datosMedidorActual = datosMedidorActual[datosMedidorActual.nombreMedidor != self.nombre_medidor.text]
+			
+			decision=VentanaDecisionCSV()
+			datosFinal=pd.concat([datosMedidorActual,datosMedidorNuevo],ignore_index=True)
+			decision.abrirVentana(
+							datosFinal,
+							self.csv_path+self.archivoMedidor,
+							"El medidor ya existe",
+							"Ya existe un medidor con ese nombre. ¿Desea sobreescribir los datos?")
+		else:
+			pd.concat([datosMedidorActual,datosMedidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoMedidor,index=False)
+
+
+
+
+
+
+
+
 	
 class VentanaConfigServidor(Popup):
 	archivoServidor="configServidor.csv"
@@ -91,12 +109,55 @@ class VentanaConfigServidor(Popup):
 		#Lee el archivo actual de servidores
 		datosServidorActual = self.buscaArchivo()
 		#Selecciona los servidores con nombre diferente al nuevo, efectivamente eliminando los medidores con el mismo nombre que el nuevo.
-		datosServidorActual = datosServidorActual[datosServidorActual.eqRemoto != self.eqremoto.text]
-		#Guarda en formato .csv el DataFrame que contiene los servidores viejos unido con el medidor nuevo
-		pd.concat([datosServidorActual,datosServidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoServidor,index=False)
+		if(datosServidorActual.size != 0 and datosServidorActual[datosServidorActual.eqRemoto == self.eqremoto.text]['eqRemoto'].size>0):
+			datosServidorActual = datosServidorActual[datosServidorActual.eqRemoto != self.eqremoto.text]
+			decision=VentanaDecisionCSV()
+			datosFinal=pd.concat([datosServidorActual,datosServidorNuevo],ignore_index=True)
+			decision.abrirVentana(
+							datosFinal,
+							self.csv_path+self.archivoServidor,
+							"El servidor ya existe",
+							"Ya existe un servidor con ese nombre. ¿Desea sobreescribir los datos?")
+		else:
+			pd.concat([datosServidorActual,datosServidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoServidor,index=False)
+		
+
+
+
+
+
+
+
+
+
+class VentanaDecisionCSV(Popup):
+	para_csv=None
+	path=None
+	def abrirVentana(self,para_csv=None,path=None,titulo=None,mensaje=None):
+		self.para_csv=para_csv
+		self.path=path
+		self.ids.mensaje.text=mensaje
+		self.title=titulo
+		self.open()
+		
+	def botonContinuar(self):
+		self.para_csv.to_csv(self.path,index=False)
+		
+
+
+
+
 
 class VentanaNotificacion(Popup):
-	pass
+	def abrirVentana(self,titulo=None,mensaje=None):
+		self.ids.mensaje.text=mensaje
+		self.title=titulo
+		self.open()
+	
+
+
+
+
 
 #LayOut Principal
 class HCDPLayout(BoxLayout):
@@ -121,6 +182,8 @@ class HCDPLayout(BoxLayout):
 			return pd.DataFrame({'nombreMedidor':[],'eqRemoto':[]})	#Si no se encuentra el .csv se regresa un DataFram con columnas vacías
 	
 	def conexionServidor(self, eqRemoto):
+		if(eqRemoto==""):
+			return
 		servidores=self.abreArchivoCSV('configServidor.csv')
 		servidores=servidores.loc[servidores['eqRemoto']==eqRemoto]
 		try:
@@ -129,11 +192,17 @@ class HCDPLayout(BoxLayout):
 										DATABASE='{'+servidores.iloc[0]['instancia']+'}',
 										UID='{'+servidores.iloc[0]['user']+'}',
 										PWD='{'+servidores.iloc[0]['password']+'}')
-			self.abrirNotificacion("Conexión Exitosa","Se conecta de manera exitosa con el servidor.")
+			notificacion=VentanaNotificacion()
+			notificacion.abrirVentana("Conexión Exitosa","Se conecta de manera exitosa con el servidor.")
 		except:
-			self.abrirNotificacion("Conexión Fallida","Hubo un problema en la conexión con el servidor.")
+			notificacion=VentanaNotificacion()
+			notificacion.abrirVentana("Conexión Fallida","Hubo un problema en la conexión con el servidor.")
+			self.ids.servidoractual.text=""
 
-count=1
+
+
+
+
 
 
 #App
@@ -142,9 +211,12 @@ class HCDPApp(App):
 	canvas=FigureCanvasKivyAgg(plt.gcf())
 	layout=HCDPLayout()
 	tiempoActualiza=1
+	count=1
 	def build(self):
 		self.title="Aplicación HCDP"
+		self.icon='logo.png'
 		self.layout.add_widget(self.canvas)
+		self.update()
 		Clock.schedule_interval(self.update, self.tiempoActualiza)		#Se establece que update se correra cada intervalo tiempoActualiza
 		return self.layout
 		
@@ -155,10 +227,9 @@ class HCDPApp(App):
 		
 	#Función que dibuja la gráfica	
 	def ploter(self): 
-		global count
-		plt.clf()
+		plt.cla()
 		plt.grid(True)
-		self.graph('np.sin(x)',np.arange(count,2*np.pi+count,0.1)) #Evalua los elementos del numpy array en la expresion '1/x'
+		self.graph('np.sin(x)',np.arange(self.count,2*np.pi+self.count,0.1)) #Evalua los elementos del numpy array en la expresion '1/x'
 		
 		plt.title(				#Título de la gráfica
 				'Envolvente de Fase',
@@ -170,7 +241,7 @@ class HCDPApp(App):
 		plt.xlabel(				#Etiqueta del eje x
 				'Temperatura',
 				fontsize='16')
-		count+=1
+		self.count+=1
 		
 		
 	#Función que actualiza la gráfica y los spinners de medidor y servidor en cada intervalo de tiempo

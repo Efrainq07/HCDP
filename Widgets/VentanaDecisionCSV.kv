@@ -1,0 +1,31 @@
+<VentanaDecisionCSV>:
+	size_hint:0.3,0.3
+	mensaje:mensaje
+	BoxLayout:
+		size_hint:.8,.8
+		orientation:'vertical'
+		Label:
+			text_size: self.width, None
+			size_hint: 1, None
+			id: mensaje
+			text: "Así es"
+		BoxLayout:
+			orientation: 'horizontal'
+			
+			Button:
+				size_hint:0.3,None
+				height: dp(30)
+				anchor_x:'center'
+				anchor_y:'bottom'
+				text: "Continuar"
+				on_release:
+					root.botonContinuar()
+					root.dismiss()
+			Button:
+				size_hint:0.3,None
+				height: dp(30)
+				anchor_x:'center'
+				anchor_y:'bottom'
+				text: "Cancelar"
+				on_release:
+					root.dismiss()

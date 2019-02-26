@@ -9,16 +9,16 @@
 		orientation: 'tb-lr'
 		canvas:
 			Color:
-				rgba: 83/255,81/255,86/255,1
+				rgba: 80/255,80/255,80/255,1
 			Rectangle:
 				pos: self.pos
 				size: self.size
 		Button: 
-			text: "Configurar Medidor"
+			text: "Configurar Nuevo Medidor"
 			size_hint_y:.05
 			on_release: root.abrirConfigMedidor()
 		Button:
-			text: "Configurar Servidor"
+			text: "Configurar Nuevo Servidor"
 			size_hint_y:.05
 			on_release: root.abrirConfigServidor()
 
@@ -40,9 +40,9 @@
 				Spinner:
 					id: medidoractual
 					on_press:
-						medidoractual.values=root.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()
+						medidoractual.values=[str(i) for i in root.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()]
 					size_hint_x:.6
-					values: root.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()
+					values: [str(i) for i in root.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()]
 			BoxLayout:
 				size_hint_y:.05
 				Label:
@@ -51,8 +51,8 @@
 				Spinner:
 					id: servidoractual
 					on_press:
-						servidoractual.values=root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()
+						servidoractual.values=[str(i) for i in root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()]
 					on_text:
 						root.conexionServidor(servidoractual.text)
 					size_hint_x:.6
-					values: root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()
+					values: [str(i) for i in root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()]
