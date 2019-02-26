@@ -1,2 +1,3 @@
 eqRemoto,DirIP,instancia,reqpass,user,password
-
+eq1,192.168.1.10,base,False,,
+servidorSICCOA,SIC10\SICCOA,pruebas_fermaca,True,frm1,frm1
