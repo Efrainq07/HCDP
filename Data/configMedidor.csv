@@ -1,3 +1,2 @@
 nombreMedidor,tipo_eos,anlg_temperatura,anlg_presion,anlg_ct,anlg_hcdp
-medidorPrimo,Advanced Peng-Robinson,ATFMC1,APFMC1,CTFMC1,HCDPFMC1
-,Advanced Peng-Robinson,,,,
+meter1,Advanced Peng-Robinson,T1FMC,P1FMC,CT1FMC,DP1FMC
