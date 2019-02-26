@@ -1,4 +1,4 @@
-<VentanaNotificacion>:
+<VentanaDecisionCSV>:
 	size_hint:0.3,0.3
 	mensaje:mensaje
 	BoxLayout:
@@ -9,12 +9,23 @@
 			size_hint: 1, None
 			id: mensaje
 			text: "Así es"
-		AnchorLayout:
+		BoxLayout:
+			orientation: 'horizontal'
+			
 			Button:
-				size_hint:0.6,None
+				size_hint:0.3,None
 				height: dp(30)
 				anchor_x:'center'
 				anchor_y:'bottom'
-				text: "Aceptar"
+				text: "Continuar"
+				on_release:
+					root.botonContinuar()
+					root.dismiss()
+			Button:
+				size_hint:0.3,None
+				height: dp(30)
+				anchor_x:'center'
+				anchor_y:'bottom'
+				text: "Cancelar"
 				on_release:
 					root.dismiss()
