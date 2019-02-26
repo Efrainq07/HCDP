@@ -1,13 +1,9 @@
 from kivy.app import App
-from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
-from kivy.uix.dropdown import DropDown
 from kivy.lang import Builder
-from kivy.config import Config
 from kivy.core.window import Window
 from kivy.clock import Clock
-from kivy.uix.floatlayout import FloatLayout
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 
 from os import listdir
