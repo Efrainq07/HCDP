@@ -194,10 +194,12 @@ class HCDPLayout(BoxLayout):
 										PWD='{'+servidores.iloc[0]['password']+'}')
 			notificacion=VentanaNotificacion()
 			notificacion.abrirVentana("Conexión Exitosa","Se conecta de manera exitosa con el servidor.")
+			self.parent.conexion=True
 		except:
 			notificacion=VentanaNotificacion()
 			notificacion.abrirVentana("Conexión Fallida","Hubo un problema en la conexión con el servidor.")
 			self.ids.servidoractual.text=""
+			self.parent.conexion=False
 
 
 
@@ -212,18 +214,23 @@ class HCDPApp(App):
 	layout=HCDPLayout()
 	tiempoActualiza=1
 	count=1
+	conexion=False
+	
 	def build(self):
 		self.title="Aplicación HCDP"
 		self.icon='logo.png'
 		self.layout.add_widget(self.canvas)
 		self.update()
+		self.ploter()
+		self.canvas.draw_idle()
 		Clock.schedule_interval(self.update, self.tiempoActualiza)		#Se establece que update se correra cada intervalo tiempoActualiza
 		return self.layout
 		
 	#Función que evalua la formula en los elementos del numpy array x
-	def graph(self, expresion, x):   
-		y = eval(expresion)
-		plt.plot(x, y)
+	def graph(self, expresion, x): 
+		if(self.conexion):
+			y = eval(expresion)
+			plt.plot(x, y)
 		
 	#Función que dibuja la gráfica	
 	def ploter(self): 
@@ -246,8 +253,9 @@ class HCDPApp(App):
 		
 	#Función que actualiza la gráfica y los spinners de medidor y servidor en cada intervalo de tiempo
 	def update(self, *args):
-		self.ploter()
-		self.canvas.draw_idle()
+		if(self.conexion):
+			self.ploter()
+			self.canvas.draw_idle()
 	
 	
 
