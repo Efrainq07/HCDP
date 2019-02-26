@@ -161,6 +161,7 @@ class VentanaNotificacion(Popup):
 
 #LayOut Principal
 class HCDPLayout(BoxLayout):
+	conectado=False
 	conexion=None
 	csv_path='./data/'
 	def abrirConfigMedidor(self):			#Abre el PopUp para configurar un nuevo medidor.
@@ -194,12 +195,12 @@ class HCDPLayout(BoxLayout):
 										PWD='{'+servidores.iloc[0]['password']+'}')
 			notificacion=VentanaNotificacion()
 			notificacion.abrirVentana("Conexión Exitosa","Se conecta de manera exitosa con el servidor.")
-			self.parent.conexion=True
+			self.conectado=True
 		except:
 			notificacion=VentanaNotificacion()
 			notificacion.abrirVentana("Conexión Fallida","Hubo un problema en la conexión con el servidor.")
 			self.ids.servidoractual.text=""
-			self.parent.conexion=False
+			self.conectado=False
 
 
 
@@ -227,16 +228,25 @@ class HCDPApp(App):
 		return self.layout
 		
 	#Función que evalua la formula en los elementos del numpy array x
-	def graph(self, expresion, x): 
-		if(self.conexion):
-			y = eval(expresion)
+	def graph(self, x):
+		if(self.layout.conectado):
+			y = eval(self.obtenerExpresion())
 			plt.plot(x, y)
-		
+
+	def obtenerExpresion(self):
+		consulta=self.layout.conexion.cursor()
+		consulta.execute("select * from coeficientes")
+		resultado=consulta.fetchone()
+		if resultado:
+			return str(resultado.coeficiente1)+"*x**2 +"+str(resultado.coeficiente2)+"*x+"+str(resultado.coeficiente3)
+		else:
+			return "0"
+
 	#Función que dibuja la gráfica	
 	def ploter(self): 
 		plt.cla()
 		plt.grid(True)
-		self.graph('np.sin(x)',np.arange(self.count,2*np.pi+self.count,0.1)) #Evalua los elementos del numpy array en la expresion '1/x'
+		self.graph(np.arange(-4,4,0.1)) #Evalua los elementos del numpy array en la expresion '1/x'
 		
 		plt.title(				#Título de la gráfica
 				'Envolvente de Fase',
@@ -253,7 +263,7 @@ class HCDPApp(App):
 		
 	#Función que actualiza la gráfica y los spinners de medidor y servidor en cada intervalo de tiempo
 	def update(self, *args):
-		if(self.conexion):
+		if(self.layout.conectado):
 			self.ploter()
 			self.canvas.draw_idle()
 	
