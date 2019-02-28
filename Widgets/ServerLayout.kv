@@ -1,3 +1,11 @@
+#:import ListAdapter kivy.adapters.listadapter.ListAdapter
+#:import ListItemButton kivy.uix.listview.ListItemButton
+<ListItemButton>:
+	selected_color: 180/255, 180/255, 180/255, 1  
+	deselected_color: 60/255, 60/255, 60/255, 1
+	on_press:
+		if(app.root.servidor!=self.text):app.root.seleccionarServidor(self.text)
+		else: app.root.seleccionarServidor("")
 <ServerLayout>:
 	StackLayout:
 		size_hint_x:.3
@@ -12,5 +20,15 @@
 			text: "Configurar Nuevo Servidor"
 			size_hint_y:.05
 			on_release: root.abrirConfigServidor()
+		Button: 
+			text: "Editar Servidor"
+			size_hint_y:.05
+			on_release: root.abrirEditarServidor()
+		Button: 
+			text: "Borrar Servidor"
+			size_hint_y:.05
+			on_release: root.abrirBorrarServidor()
 	ListView:
-		item_strings: [str(i) for i in root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()]
+		id:lista_servidores
+		adapter:
+			ListAdapter(data=[str(i) for i in root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()],cls=ListItemButton)

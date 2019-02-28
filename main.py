@@ -9,6 +9,7 @@ from kivy.uix.tabbedpanel import TabbedPanel
 from kivy.uix.tabbedpanel import TabbedPanelHeader
 from kivy.uix.listview import ListView
 from kivy.uix.listview import ListItemButton
+from kivy.adapters.listadapter import ListAdapter
 
 from os import listdir
 import pyodbc
@@ -29,11 +30,18 @@ for kv in listdir(kv_path):
 
 
 
-class BotonLista(ListItemButton):
-	pass
 
 class TabLayout(TabbedPanel):
-	pass
+	medidor=None
+	servidor=None
+	
+	
+	def seleccionarMedidor(self,meter):
+		self.medidor=meter
+		
+		
+	def seleccionarServidor(self,server):
+		self.servidor=server
 
 
 #PopUps
@@ -41,6 +49,10 @@ class VentanaConfigMedidor(Popup):
 	archivoMedidor="configMedidor.csv"
 	csv_path='./data/'
 	
+	
+	def __init__(self, **kwargs):
+		self.caller = kwargs.get('caller')
+		super(VentanaConfigMedidor, self).__init__()
 	
 	def buscaArchivo(self):									#Busca el archivo .csv de los medidores configurados y lo regresa como
 		for csv in listdir(self.csv_path):					#DataFrame, si no se encuentra se regresa un DataFrame con columnas vacías.
@@ -77,6 +89,8 @@ class VentanaConfigMedidor(Popup):
 							"Ya existe un medidor con ese nombre. ¿Desea sobreescribir los datos?")
 		else:
 			pd.concat([datosMedidorActual,datosMedidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoMedidor,index=False)
+			self.caller.ids.lista_medidores.adapter = ListAdapter(data=[str(i) for i in self.caller.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()],cls=ListItemButton)
+			
 
 
 
@@ -89,6 +103,10 @@ class VentanaConfigMedidor(Popup):
 class VentanaConfigServidor(Popup):
 	archivoServidor="configServidor.csv"
 	csv_path='./data/'
+	def __init__(self, **kwargs):
+		self.caller = kwargs.get('caller')
+		super(VentanaConfigServidor, self).__init__()
+	
 	def toggleRequiereUser(self):
 		self.password.readonly= not self.password.readonly
 		self.user.readonly= not self.user.readonly
@@ -127,6 +145,7 @@ class VentanaConfigServidor(Popup):
 							"Ya existe un servidor con ese nombre. ¿Desea sobreescribir los datos?")
 		else:
 			pd.concat([datosServidorActual,datosServidorNuevo],ignore_index=True).to_csv(self.csv_path+self.archivoServidor,index=False)
+			self.caller.ids.lista_servidores.adapter = ListAdapter(data=[str(i) for i in self.caller.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()],cls=ListItemButton)
 		
 
 
@@ -151,7 +170,17 @@ class VentanaDecisionCSV(Popup):
 		self.para_csv.to_csv(self.path,index=False)
 		
 
-
+class VentanaDecision(Popup):
+	callback=None
+	def abrirVentana(self,titulo,mensaje,callback):
+		self.title=titulo
+		self.ids.mensaje.text=mensaje
+		self.callback=callback
+		self.open()
+		
+	def botonContinuar(self):
+		self.callback()
+		
 
 
 
@@ -166,14 +195,39 @@ class VentanaNotificacion(Popup):
 
 class ServerLayout(BoxLayout):
 	csv_path='./data/'
-	def abrirConfigMedidor(self):			#Abre el PopUp para configurar un nuevo medidor.
-		config=VentanaConfigMedidor()
-		config.open()
 		
 		
 	def abrirConfigServidor(self):			#Abre el PopUp para configurar un nuevo servidor
-		config=VentanaConfigServidor()
+		config=VentanaConfigServidor(caller=self)
 		config.open()
+		
+	def abrirEditarServidor(self):
+		if(self.parent.parent.servidor):
+			datosServidores=self.abreArchivoCSV('configServidor.csv')
+			datosServidores=datosServidores[datosServidores.eqRemoto==self.parent.parent.servidor]
+			config=VentanaConfigServidor()
+			config.eqremoto.text=datosServidores.iloc[0]['eqRemoto']
+			config.dirip.text=str(datosServidores.iloc[0]['DirIP'])
+			config.inst.text=str(datosServidores.iloc[0]['instancia'])
+			config.reqpass.active=bool(datosServidores.iloc[0]['reqpass'])
+			config.password.text=str(datosServidores.iloc[0]['password'])
+			config.user.text=str(datosServidores.iloc[0]['user'])
+			config.open()
+		else:
+			self.abrirNotificacion("No se ha seleccionado un medidor","Seleccione un medidor para editar.")
+		
+	def abrirBorrarServidor(self):
+		if(self.parent.parent.servidor):
+			config=VentanaDecision()
+			config.abrirVentana("Borrar Servidor", "¿Está seguro que desea borrar el servidor?", self.borrarServidor)
+		else:
+			self.abrirNotificacion("No se ha seleccionada un medidor","Seleccione un medidor para borrar.")
+	
+	def borrarServidor(self):
+		datosServidores=self.abreArchivoCSV('configServidor.csv')
+		datosServidores=datosServidores[datosServidores.eqRemoto!=self.parent.parent.servidor]
+		datosServidores.to_csv(self.csv_path+'configServidor.csv',index=False)
+		self.ids.lista_servidores.adapter=ListAdapter(data=[str(i) for i in self.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()],cls=ListItemButton)
 		
 		
 	def abrirNotificacion(self,titulo,mensaje):
@@ -194,13 +248,36 @@ class ServerLayout(BoxLayout):
 class MeterLayout(BoxLayout):
 	csv_path='./data/'
 	def abrirConfigMedidor(self):			#Abre el PopUp para configurar un nuevo medidor.
-		config=VentanaConfigMedidor()
+		config=VentanaConfigMedidor(caller=self)
 		config.open()
 		
-		
-	def abrirConfigServidor(self):			#Abre el PopUp para configurar un nuevo servidor
-		config=VentanaConfigServidor()
-		config.open()
+	def abrirEditarMedidor(self):
+		if(self.parent.parent.medidor):
+			datosMedidores=self.abreArchivoCSV('configMedidor.csv')
+			datosMedidores=datosMedidores[datosMedidores.nombreMedidor==self.parent.parent.medidor]
+			config=VentanaConfigMedidor()
+			config.nombre_medidor.text=datosMedidores.iloc[0]['nombreMedidor']
+			config.tipo_eos.text=str(datosMedidores.iloc[0]['tipo_eos'])
+			config.anlg_temperatura.text=str(datosMedidores.iloc[0]['anlg_temperatura'])
+			config.anlg_presion.text=str(datosMedidores.iloc[0]['anlg_presion'])
+			config.anlg_ct.text=str(datosMedidores.iloc[0]['anlg_ct'])
+			config.anlg_hcdp.text=str(datosMedidores.iloc[0]['anlg_hcdp'])
+			config.open()
+		else:
+			self.abrirNotificacion("No se ha seleccionado un medidor","Seleccione un medidor para editar.")
+			
+	def abrirBorrarMedidor(self):
+		if(self.parent.parent.medidor):
+			config=VentanaDecision()
+			config.abrirVentana("Borrar Medidor", "¿Está seguro que desea borrar el medidor?", self.borrarMedidor)
+		else:
+			self.abrirNotificacion("No se ha seleccionada un medidor","Seleccione un medidor para borrar.")
+	
+	def borrarMedidor(self):
+		datosMedidores=self.abreArchivoCSV('configMedidor.csv')
+		datosMedidores=datosMedidores[datosMedidores.nombreMedidor!=self.parent.parent.medidor]
+		datosMedidores.to_csv(self.csv_path+'configMedidor.csv',index=False)
+		self.ids.lista_medidores.adapter=ListAdapter(data=[str(i) for i in self.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()],cls=ListItemButton)
 		
 		
 	def abrirNotificacion(self,titulo,mensaje):
@@ -294,6 +371,8 @@ class HCDPApp(App):
 	count=1
 	conexion=False
 	
+	def printh(self):
+		print(";v")
 	
 	def build(self):
 		self.title="Aplicación HCDP"

@@ -1,5 +1,12 @@
 #:import ListAdapter kivy.adapters.listadapter.ListAdapter
 #:import ListItemButton kivy.uix.listview.ListItemButton
+<ListItemButton>:
+	selected_color: 180/255, 180/255, 180/255, 1  
+	deselected_color: 60/255, 60/255, 60/255, 1
+	on_press:
+		if(app.root.medidor!=self.text):app.root.seleccionarMedidor(self.text)
+		else: app.root.seleccionarMedidor("")
+		
 <MeterLayout>:
 	StackLayout:
 		size_hint_x:.3
@@ -14,6 +21,15 @@
 			text: "Configurar Nuevo Medidor"
 			size_hint_y:.05
 			on_release: root.abrirConfigMedidor()
+		Button: 
+			text: "Editar Medidor"
+			size_hint_y:.05
+			on_release: root.abrirEditarMedidor()
+		Button: 
+			text: "Borrar Medidor"
+			size_hint_y:.05
+			on_release: root.abrirBorrarMedidor()
+		
 	ListView:
 		id: lista_medidores
 		adapter:
