@@ -29,6 +29,16 @@
 			text: "Borrar Medidor"
 			size_hint_y:.05
 			on_release: root.abrirBorrarMedidor()
+		StackLayout:
+			orientation:'bt-lr'
+			size_hint:1,.85
+			BoxLayout:
+				size_hint_y:.15
+				size_hint_x:1
+				Image:
+					allow_stretch:True
+					keep_ratio: False
+					source:'fermaca.png'
 		
 	ListView:
 		id: lista_medidores

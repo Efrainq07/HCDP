@@ -1,7 +1,4 @@
 <HCDPLayout>:
-	rows: 1
-	columns: 2
-	spacing:20
 	medidoractual:medidoractual
 	servidoractual:servidoractual
 	StackLayout:
@@ -13,37 +10,37 @@
 			Rectangle:
 				pos: self.pos
 				size: self.size
+		BoxLayout:
+			size_hint_y:.05
+			Label:
+				text: "Medidor:"
+				size_hint_x:.2
+			Spinner:
+				id: medidoractual
+				on_press:
+					medidoractual.values=[str(i) for i in root.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()]
+				size_hint_x:.6
+				values: [str(i) for i in root.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()]
+		BoxLayout:
+			size_hint_y:.05
+			Label:
+				text: "Servidor:"
+				size_hint_x:.2
+			Spinner:
+				id: servidoractual
+				on_press:
+					servidoractual.values=[str(i) for i in root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()]
+				on_text:
+					root.conexionServidor(servidoractual.text)
+				size_hint_x:.6
+				values: [str(i) for i in root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()]
 		StackLayout:
 			orientation:'bt-lr'
-			size_hint_x:1
-			size_hint_y:1
+			size_hint:1,.90
 			BoxLayout:
 				size_hint_y:.15
+				size_hint_x:1
 				Image:
 					allow_stretch:True
 					keep_ratio: False
 					source:'fermaca.png'
-			BoxLayout:
-				size_hint_y:.05
-				Label:
-					text: "Medidor:"
-					size_hint_x:.2
-				Spinner:
-					id: medidoractual
-					on_press:
-						medidoractual.values=[str(i) for i in root.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()]
-					size_hint_x:.6
-					values: [str(i) for i in root.abreArchivoCSV('configMedidor.csv')['nombreMedidor'].tolist()]
-			BoxLayout:
-				size_hint_y:.05
-				Label:
-					text: "Servidor:"
-					size_hint_x:.2
-				Spinner:
-					id: servidoractual
-					on_press:
-						servidoractual.values=[str(i) for i in root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()]
-					on_text:
-						root.conexionServidor(servidoractual.text)
-					size_hint_x:.6
-					values: [str(i) for i in root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()]
