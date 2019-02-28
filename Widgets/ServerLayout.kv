@@ -1,0 +1,16 @@
+<ServerLayout>:
+	StackLayout:
+		size_hint_x:.3
+		orientation: 'tb-lr'
+		canvas:
+			Color:
+				rgba: 80/255,80/255,80/255,1
+			Rectangle:
+				pos: self.pos
+				size: self.size
+		Button:
+			text: "Configurar Nuevo Servidor"
+			size_hint_y:.05
+			on_release: root.abrirConfigServidor()
+	ListView:
+		item_strings: [str(i) for i in root.abreArchivoCSV('configServidor.csv')['eqRemoto'].tolist()]

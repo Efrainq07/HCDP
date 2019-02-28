@@ -5,6 +5,10 @@ from kivy.lang import Builder
 from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+from kivy.uix.tabbedpanel import TabbedPanel
+from kivy.uix.tabbedpanel import TabbedPanelHeader
+from kivy.uix.listview import ListView
+from kivy.uix.listview import ListItemButton
 
 from os import listdir
 import pyodbc
@@ -25,12 +29,19 @@ for kv in listdir(kv_path):
 
 
 
+class BotonLista(ListItemButton):
+	pass
+
+class TabLayout(TabbedPanel):
+	pass
 
 
 #PopUps
 class VentanaConfigMedidor(Popup):
 	archivoMedidor="configMedidor.csv"
 	csv_path='./data/'
+	
+	
 	def buscaArchivo(self):									#Busca el archivo .csv de los medidores configurados y lo regresa como
 		for csv in listdir(self.csv_path):					#DataFrame, si no se encuentra se regresa un DataFrame con columnas vacías.
 			if(csv==self.archivoMedidor):					#(pero con el nombre de las columnas incluido).
@@ -153,6 +164,60 @@ class VentanaNotificacion(Popup):
 
 
 
+class ServerLayout(BoxLayout):
+	csv_path='./data/'
+	def abrirConfigMedidor(self):			#Abre el PopUp para configurar un nuevo medidor.
+		config=VentanaConfigMedidor()
+		config.open()
+		
+		
+	def abrirConfigServidor(self):			#Abre el PopUp para configurar un nuevo servidor
+		config=VentanaConfigServidor()
+		config.open()
+		
+		
+	def abrirNotificacion(self,titulo,mensaje):
+		config=VentanaNotificacion()
+		config.title=titulo
+		config.ids.mensaje.text=mensaje
+		config.open()
+		
+		
+	def abreArchivoCSV(self,archivo):								#Abre como DataFrame el archivo .csv que se pide.
+		for csv in listdir(self.csv_path):
+			if(csv==archivo):
+				return pd.read_csv(self.csv_path+archivo)
+				
+		return pd.DataFrame({'nombreMedidor':[],'eqRemoto':[]})	
+			
+			
+class MeterLayout(BoxLayout):
+	csv_path='./data/'
+	def abrirConfigMedidor(self):			#Abre el PopUp para configurar un nuevo medidor.
+		config=VentanaConfigMedidor()
+		config.open()
+		
+		
+	def abrirConfigServidor(self):			#Abre el PopUp para configurar un nuevo servidor
+		config=VentanaConfigServidor()
+		config.open()
+		
+		
+	def abrirNotificacion(self,titulo,mensaje):
+		config=VentanaNotificacion()
+		config.title=titulo
+		config.ids.mensaje.text=mensaje
+		config.open()
+		
+		
+	def abreArchivoCSV(self,archivo):								#Abre como DataFrame el archivo .csv que se pide.
+		for csv in listdir(self.csv_path):
+			if(csv==archivo):
+				return pd.read_csv(self.csv_path+archivo)
+				
+		return pd.DataFrame({'nombreMedidor':[],'eqRemoto':[]})		
+
+
 
 
 #LayOut Principal
@@ -160,23 +225,32 @@ class HCDPLayout(BoxLayout):
 	conectado=False
 	conexion=None
 	csv_path='./data/'
+	
+	
 	def abrirConfigMedidor(self):			#Abre el PopUp para configurar un nuevo medidor.
 		config=VentanaConfigMedidor()
 		config.open()
+		
+		
 	def abrirConfigServidor(self):			#Abre el PopUp para configurar un nuevo servidor
 		config=VentanaConfigServidor()
 		config.open()
+		
+		
 	def abrirNotificacion(self,titulo,mensaje):
 		config=VentanaNotificacion()
 		config.title=titulo
 		config.ids.mensaje.text=mensaje
 		config.open()
+		
+		
 	def abreArchivoCSV(self,archivo):								#Abre como DataFrame el archivo .csv que se pide.
 			for csv in listdir(self.csv_path):
 				if(csv==archivo):
 					return pd.read_csv(self.csv_path+archivo)
 					
 			return pd.DataFrame({'nombreMedidor':[],'eqRemoto':[]})	#Si no se encuentra el .csv se regresa un DataFram con columnas vacías
+	
 	
 	def conexionServidor(self, eqRemoto):
 		if(eqRemoto==""):
@@ -208,10 +282,18 @@ class HCDPLayout(BoxLayout):
 class HCDPApp(App):
 	plt.style.use('dark_background')
 	canvas=FigureCanvasKivyAgg(plt.gcf())
+	
+	
 	layout=HCDPLayout()
+	layoutServer=ServerLayout()
+	layoutMeter=MeterLayout()
+	
+	tabManager=TabLayout()
+	
 	tiempoActualiza=1
 	count=1
 	conexion=False
+	
 	
 	def build(self):
 		self.title="Aplicación HCDP"
@@ -221,13 +303,28 @@ class HCDPApp(App):
 		self.ploter()
 		self.canvas.draw_idle()
 		Clock.schedule_interval(self.update, self.tiempoActualiza)		#Se establece que update se correra cada intervalo tiempoActualiza
-		return self.layout
+		
+		tabHCDP=TabbedPanelHeader(text='Gráfica HCDP')
+		self.tabManager.add_widget(tabHCDP)
+		tabHCDP.content=self.layout
+		
+		tabServer=TabbedPanelHeader(text='Configurar Servidores')
+		self.tabManager.add_widget(tabServer)
+		tabServer.content=self.layoutServer
+		
+		tabMeter=TabbedPanelHeader(text='Configurar Medidores')
+		self.tabManager.add_widget(tabMeter)
+		tabMeter.content=self.layoutMeter
+		
+		return self.tabManager
+		
 		
 	#Función que evalua la formula en los elementos del numpy array x
 	def graph(self, x):
 		if(self.layout.conectado):
 			y = eval(self.obtenerExpresion())
 			plt.plot(x, y)
+
 
 	def obtenerExpresion(self):
 		consulta=self.layout.conexion.cursor()
@@ -242,6 +339,7 @@ class HCDPApp(App):
 					resultado.coeficiente3)
 			else:
 				return "x*0"
+
 
 	#Función que dibuja la gráfica	
 	def ploter(self): 
