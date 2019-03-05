@@ -1,8 +1,9 @@
 #:import ListAdapter kivy.adapters.listadapter.ListAdapter
 #:import ListItemButton kivy.uix.listview.ListItemButton
 <ListItemButton>:
-	selected_color: 180/255, 180/255, 180/255, 1  
-	deselected_color: 60/255, 60/255, 60/255, 1
+	selected_color: 0/255, 150/255, 250/255, 1  
+	deselected_color: 100/255, 100/255, 100/255, 1
+	background_color: 200/255,200/255,200/255,1
 	on_press:
 		if(app.root.servidor!=self.text):app.root.seleccionarServidor(self.text)
 		else: app.root.seleccionarServidor("")
